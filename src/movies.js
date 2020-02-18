@@ -31,7 +31,10 @@ console.log(averageValue(getRate(movies)).toFixed(1));
 const dramaMovies = (arr) => (arr).reduce((e, key) => e)
 console.log(dramaMovies(getRate(movies)));
 
-const dramaMovies1 = (arr) => arr.filter(e => e.genre.includes("Drama"));
+/* const dramaMovies1 = (arr) => arr.filter(e => e.genre.includes("Drama"));//sensitive case
+console.log(dramaMovies1(movies)); */
+
+const dramaMovies1 = (arr) => arr.filter(e => new RegExp('draMA', 'i').test(e.genre));//insesitive case
 console.log(dramaMovies1(movies));
 
 const averageValue1 = (arr) => arr.reduce((acumulador, puntuacion) => acumulador + puntuacion) / arr.length;
@@ -89,3 +92,44 @@ console.log(listas1);
 for(let entry of listas){
   console.log(entry);
 };
+
+// Best year average response
+
+function bestYear(arr){
+
+  let ratesYear   = [];
+  let moviesYear  = [];
+  let averageYear = [];
+
+  if( arr.length === 0){
+    return undefined;
+  }
+  arr.map((data) =>{
+    if(ratesYear[data.year]){
+      moviesYear[data.year]   += 1; // iteramos y añadimos cada año si hay alguno repetido
+      ratesYear[data.year]    += parseFloat(data.rate) //iteramos y añadimos las notas con pfloat 
+      averageYear[data.year]  = parseFloat((ratesYear[data.year] / moviesYear[data.year]).toFixed(2));// sacamos media y añadimos toFixed para quedarnos con los decimales
+
+    } else {
+      ratesYear[data.year]   = parseFloat(data.rate);
+      moviesYear[data.year]  = 1;
+      averageYear[data.year] = parseFloat(data.rate);
+    }
+  });
+
+  const year = Object.keys(averageYear).reduce((a, b) =>{
+    if(averageYear[a] === averageYear[b]){
+      if( b < a){
+        return b;
+      }
+      return a;
+    } else if (averageYear[a] > averageYear[b]){
+      return a;
+    }
+    return b;
+  });
+
+  return `The best year was ${year} with an average rate of ${averageYear[year]}`;
+};
+
+console.log(bestYear(movies));
